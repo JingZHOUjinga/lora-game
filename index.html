@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoRA训练模拟器 - 预制菜秘制酱料工坊</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 过场动画界面 -->
+        <div id="intro-screen" class="screen active">
+            <div class="intro-cinematic">
+                <!-- 场景1：加班 -->
+                <div class="scene scene-office" id="scene-1">
+                    <div class="scene-bg">
+                        <div class="office-elements">
+                            <div class="monitor-glow"></div>
+                            <div class="desk-lamp">💡</div>
+                            <div class="coffee-cup">☕</div>
+                            <div class="clock">🕐 03:47</div>
+                        </div>
+                        <div class="character-sprite" id="char-office">
+                            <div class="char-body">🧑‍💻</div>
+                            <div class="char-zzz">💤</div>
+                        </div>
+                    </div>
+                    <div class="scene-text" id="text-1">
+                        <p class="narrator">深夜，某互联网公司...</p>
+                    </div>
+                </div>
+
+                <!-- 场景2：被吸入 -->
+                <div class="scene scene-portal" id="scene-2" style="display:none;">
+                    <div class="scene-bg">
+                        <div class="portal-vortex" id="portal-vortex">
+                            <div class="vortex-ring ring-1"></div>
+                            <div class="vortex-ring ring-2"></div>
+                            <div class="vortex-ring ring-3"></div>
+                            <div class="vortex-center">🌀</div>
+                        </div>
+                        <div class="character-sucked" id="char-sucked">🧑‍💻</div>
+                        <div class="pixel-particles" id="particles"></div>
+                    </div>
+                    <div class="scene-text" id="text-2">
+                        <p class="narrator">突然，电脑屏幕发出刺眼的光芒——</p>
+                    </div>
+                </div>
+
+                <!-- 场景3：奇幻大陆 -->
+                <div class="scene scene-fantasy" id="scene-3" style="display:none;">
+                    <div class="scene-bg">
+                        <div class="fantasy-landscape">
+                            <div class="mountain">🏔️</div>
+                            <div class="castle">🏰</div>
+                            <div class="dragon">🐉</div>
+                            <div class="magic-sparkles">✨</div>
+                            <div class="floating-island">🌋</div>
+                        </div>
+                        <div class="character-landed" id="char-landed">
+                            <div class="char-confused">😵‍💫</div>
+                        </div>
+                    </div>
+                    <div class="scene-text" id="text-3">
+                        <p class="narrator">犇小九被吸入了...奇幻大陆！</p>
+                    </div>
+                </div>
+
+                <!-- 场景4：接到任务 -->
+                <div class="scene scene-quest" id="scene-4" style="display:none;">
+                    <div class="scene-bg">
+                        <div class="quest-npc">
+                            <div class="npc-icon">🧙‍♂️</div>
+                            <div class="npc-glow"></div>
+                        </div>
+                        <div class="quest-scroll" id="quest-scroll">
+                            <div class="scroll-content">
+                                <h3>📜 穿越任务</h3>
+                                <p>勇者犇小九！欢迎来到酱料大陆！</p>
+                                <p>在这里，<strong>预制菜</strong>是万物基础，</p>
+                                <p>而<strong>专属酱料</strong>才是征服世界的关键！</p>
+                                <br>
+                                <p>你需要掌握 <strong>LoRA 炼金术</strong>，</p>
+                                <p>在预制菜的基础上熬制秘方酱料，</p>
+                                <p>完成所有试炼即可获得<span class="gold-text">万两黄金</span>，</p>
+                                <p>重回现实世界！</p>
+                            </div>
+                        </div>
+                        <div class="gold-reward">
+                            <span class="gold-icon">🪙</span>
+                            <span class="gold-amount">×10000</span>
+                        </div>
+                    </div>
+                    <div class="scene-text" id="text-4">
+                        <p class="narrator">神秘法师向你宣读任务...</p>
+                    </div>
+                </div>
+
+                <!-- 过场标题 -->
+                <div class="scene scene-title" id="scene-5" style="display:none;">
+                    <div class="title-reveal">
+                        <div class="title-pre">— 穿越之后 —</div>
+                        <h1 class="title-main" id="title-main">我用 LoRA 模型征服奇幻大陆</h1>
+                        <div class="title-sub">以SDXL为底模 | 预制菜×专属酱料</div>
+                    </div>
+                </div>
+
+                <!-- 控制 -->
+                <div class="intro-controls">
+                    <div class="intro-progress">
+                        <div class="intro-progress-bar" id="intro-progress-bar"></div>
+                    </div>
+                    <div class="intro-buttons">
+                        <button id="btn-skip" class="btn-skip">跳过 ⏭️</button>
+                        <button id="btn-intro-next" class="btn-intro-next">继续 →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 开始界面 -->
+        <div id="start-screen" class="screen">
+            <div class="start-content">
+                <div class="logo-area">
+                    <div class="chef-hat">👨‍🍳</div>
+                    <h1>LoRA训练模拟器</h1>
+                    <h2>🍳 预制菜 × 秘制酱料工坊 🧪</h2>
+                </div>
+                <div class="intro-box">
+                    <p><strong>底模（大模型）</strong>= 基础预制菜 🍝</p>
+                    <p><strong>LoRA 模型</strong>= 秘制专属酱料 🫙</p>
+                    <p><strong>训练数据集</strong>= 熬制酱料的原料 🥬</p>
+                    <p><strong>训练参数</strong>= 酱料配比、火候、调味轻重 🔥</p>
+                    <p><strong>触发词</strong>= 食用时蘸料的使用方式 🥢</p>
+                </div>
+                <p class="subtitle">以SDXL为底模，学习调整训练步数、学习率、Rank值</p>
+                <button id="btn-start" class="btn-primary">开始调制秘方 🚀</button>
+            </div>
+        </div>
+
+        <!-- 主游戏界面 -->
+        <div id="game-screen" class="screen">
+            <header class="game-header">
+                <div class="header-left">
+                    <span class="badge">SDXL 底模</span>
+                    <span class="badge badge-green">预制菜就绪 ✓</span>
+                </div>
+                <div class="header-center">
+                    <h3>🧪 秘制酱料调配台</h3>
+                </div>
+                <div class="header-right">
+                    <span class="score-display">得分: <span id="score">0</span></span>
+                    <span class="round-display">关卡: <span id="round">1</span>/5</span>
+                </div>
+            </header>
+
+            <div class="game-body">
+                <!-- 左侧：任务面板 -->
+                <div class="panel panel-left">
+                    <div class="panel-header">
+                        <h4>📋 当前任务</h4>
+                    </div>
+                    <div class="task-card" id="task-card">
+                        <div class="task-type" id="task-type">人物LoRA</div>
+                        <div class="task-desc" id="task-desc">训练一个动漫角色LoRA</div>
+                        <div class="task-requirements" id="task-requirements"></div>
+                    </div>
+
+                    <div class="panel-header" style="margin-top:16px;">
+                        <h4>🎯 目标指标</h4>
+                    </div>
+                    <div class="target-metrics" id="target-metrics"></div>
+
+                    <div class="panel-header" style="margin-top:16px;">
+                        <h4>💡 提示</h4>
+                    </div>
+                    <div class="hint-box" id="hint-box">
+                        <p>调整右侧参数来匹配目标！</p>
+                    </div>
+                </div>
+
+                <!-- 中间：可视化区域 -->
+                <div class="panel panel-center">
+                    <div class="panel-header">
+                        <h4>🖼️ 训练效果预览</h4>
+                    </div>
+                    <div class="preview-area">
+                        <canvas id="training-canvas" width="400" height="300"></canvas>
+                        <div class="metrics-bar">
+                            <div class="metric">
+                                <span class="metric-label">Loss值</span>
+                                <span class="metric-value" id="loss-value">--</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">训练进度</span>
+                                <span class="metric-value" id="progress-value">0%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">模型质量</span>
+                                <span class="metric-value" id="quality-value">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 训练动画区 -->
+                    <div class="cooking-animation" id="cooking-area">
+                        <div class="pot-container">
+                            <div class="pot" id="pot">
+                                <div class="pot-content" id="pot-content"></div>
+                                <div class="steam" id="steam"></div>
+                            </div>
+                            <div class="fire" id="fire">🔥</div>
+                        </div>
+                        <div class="cooking-status" id="cooking-status">等待开始...</div>
+                    </div>
+                </div>
+
+                <!-- 右侧：参数调整 -->
+                <div class="panel panel-right">
+                    <div class="panel-header">
+                        <h4>⚙️ 参数调配</h4>
+                    </div>
+
+                    <div class="param-group">
+                        <div class="param-label">
+                            <span>🔢 Network Rank (维度)</span>
+                            <span class="param-value" id="rank-display">16</span>
+                        </div>
+                        <input type="range" id="rank-slider" min="4" max="128" value="16" step="4">
+                        <div class="param-hint">控制LoRA容量，相当于酱料的浓度</div>
+                        <div class="param-range">4 ←→ 128</div>
+                    </div>
+
+                    <div class="param-group">
+                        <div class="param-label">
+                            <span>📈 Learning Rate (学习率)</span>
+                            <span class="param-value" id="lr-display">0.0005</span>
+                        </div>
+                        <input type="range" id="lr-slider" min="0" max="100" value="50" step="1">
+                        <div class="param-hint">学习速度，相当于火候大小</div>
+                        <div class="param-range">0.0001 ←→ 0.01</div>
+                    </div>
+
+                    <div class="param-group">
+                        <div class="param-label">
+                            <span>🔄 训练步数 (Steps)</span>
+                            <span class="param-value" id="steps-display">1000</span>
+                        </div>
+                        <input type="range" id="steps-slider" min="200" max="5000" value="1000" step="100">
+                        <div class="param-hint">训练时长，相当于熬制时间</div>
+                        <div class="param-range">200 ←→ 5000</div>
+                    </div>
+
+                    <div class="param-group">
+                        <div class="param-label">
+                            <span>🖼️ 训练图片数</span>
+                            <span class="param-value" id="images-display">20</span>
+                        </div>
+                        <input type="range" id="images-slider" min="5" max="50" value="20" step="1">
+                        <div class="param-hint">原料数量，相当于食材种类</div>
+                        <div class="param-range">5 ←→ 50</div>
+                    </div>
+
+                    <div class="param-group">
+                        <div class="param-label">
+                            <span>📦 Batch Size</span>
+                            <span class="param-value" id="batch-display">4</span>
+                        </div>
+                        <input type="range" id="batch-slider" min="1" max="16" value="4" step="1">
+                        <div class="param-hint">每次投料量</div>
+                        <div class="param-range">1 ←→ 16</div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="btn-train" class="btn-train">🔥 开始训练（熬制）</button>
+                        <button id="btn-reset" class="btn-secondary">🔄 重置参数</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果界面 -->
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <div class="result-icon" id="result-icon">🎉</div>
+                <h2 id="result-title">训练完成！</h2>
+                <div class="result-details" id="result-details"></div>
+                <div class="result-score">
+                    <span>本轮得分:</span>
+                    <span id="round-score" class="big-score">0</span>
+                </div>
+                <div class="result-feedback" id="result-feedback"></div>
+                <button id="btn-next" class="btn-primary">下一关 →</button>
+            </div>
+        </div>
+
+        <!-- 最终结算界面 -->
+        <div id="final-screen" class="screen">
+            <div class="final-content">
+                <div class="final-icon">🏆</div>
+                <h2>恭喜完成所有训练！</h2>
+                <div class="final-score">
+                    <span>总得分:</span>
+                    <span id="final-score" class="big-score">0</span>
+                    <span>/ 500</span>
+                </div>
+                <div class="final-grade" id="final-grade"></div>
+                <div class="final-summary" id="final-summary"></div>
+                <button id="btn-restart" class="btn-primary">重新开始 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
